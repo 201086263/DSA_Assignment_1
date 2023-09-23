@@ -1,0 +1,43 @@
+{
+  "organization": "ballerina",
+  "name": "observe",
+  "version": "1.0.6",
+  "export": [
+    "observe",
+    "observe.mockextension"
+  ],
+  "ballerina_version": "2201.0.4",
+  "implementation_vendor": "WSO2",
+  "language_spec_version": "2022R1",
+  "platform": "java11",
+  "platformDependencies": [
+    {
+      "path": "platform/java11/observe-native-1.0.6.jar"
+    },
+    {
+      "path": "platform/java11/opentelemetry-sdk-trace-1.0.0.jar",
+      "artifactId": "opentelemetry-sdk-trace",
+      "groupId": "io.opentelemetry",
+      "version": "1.0.0"
+    },
+    {
+      "path": "platform/java11/opentelemetry-sdk-testing-1.0.0.jar",
+      "artifactId": "opentelemetry-sdk-testing",
+      "groupId": "io.opentelemetry",
+      "version": "1.0.0"
+    },
+    {
+      "path": "platform/java11/opentelemetry-sdk-common-1.0.0.jar",
+      "artifactId": "opentelemetry-sdk-common",
+      "groupId": "io.opentelemetry",
+      "version": "1.0.0"
+    },
+    {
+      "path": "platform/java11/opentelemetry-semconv-1.0.0-alpha.jar",
+      "artifactId": "opentelemetry-semconv",
+      "groupId": "io.opentelemetry",
+      "version": "1.0.0-alpha"
+    }
+  ],
+  "template": false
+}
