@@ -1,0 +1,191 @@
+openapi: "3.0.1"
+info:
+  title: Fauculty of Computer and Informatics Staff Members
+  version: "0.0.1"
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /All_Lecturers:
+    get:
+      summary: Get a list of all lecturers
+      operationId: All_lecturers
+      responses:
+        "200":
+          description: "A list of lecturers"
+          content:
+            application/json:
+              schema:
+                description: list of all lecturer's received successfully!!
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lecturer"
+    
+  /Lecturer_by_Staff_number:
+    get: 
+      summary: Get Lecturer using Staff number
+      operationId: Lecturer_by_Staff_number
+      parameters:
+        - name: Staff_number
+          in: query
+          description: retrieve lecturer by staff number
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: Successfully Retrieved Lecturer details
+                $ref: "#/components/schemas/Lecturer"
+            text/plain:
+              schema:
+                type: string
+
+
+  /Add_Lecturer:
+    post:
+      summary: add new lecturer
+      description: create lecturer with staff number, name, title, gender, office number, courses 
+      operationId: Add_Lecturer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Lecturer"
+      responses:
+        "200":
+          description: lecturer added
+          content:
+            application/json:
+              schema:
+                description: Lecturer added successfully!!
+                type: string
+            text/plain:
+              schema:
+                type: string
+
+  /Update_Lecturer:
+    put:
+      summary: Lecturer updated
+      description: update existing lecturer using Staff number
+      operationId: Update_Lecturer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Lecturer"
+      responses:
+        "200":
+          description: updated
+          content:
+            application/json:
+              schema:
+                description: Lecturer updated successfully!!
+                type: string
+            text/plain:
+                  schema:
+                    type: string
+
+  /Delete_Lecturer/{Staff_number}:
+    delete:
+      summary: Delete Lecturer using staff number
+      description: Delete Lecturer using staff number
+      operationId: Delete_Lecturer
+      parameters:
+        - name: Staff_number
+          in: path
+          description: Delete Lecturer by Staff number
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: deleted
+          content:
+            application/json:
+              schema:
+                description: Lecturer Deleted Successfully!!
+                $ref: "#/components/schemas/Lecturer"
+            text/plain:
+              schema:  
+                type: string
+  /Course/{Course_code}/lecturers:
+    get:
+      summary: Retrieve all lecturer's that teach the course
+      parameters:
+        - name: Course_code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lecturer's Successfully retrieved!!
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lecturer"
+            text/plain:
+               schema:
+                 type: string
+
+  /Office/{Office_number}/lecturers:
+    get:
+      summary: Retrieve all lecturer's that sit in the same office
+      parameters:
+        - name: Office_number
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully retrieved!!
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lecturer" 
+            text/plain: 
+              schema:
+                type: string               
+
+components:
+  schemas:
+    Lecturer:
+      type: object
+      properties:
+        Staff_number:
+          type: string
+        Lecturer_name:
+          type: string
+        Office_number:
+          type: string
+        Title:
+          type: string
+        Gender: 
+          type: string
+        Courses:
+          type: array
+          items:
+            type: string
+
+    Course:
+      type: object
+      properties:
+        Course_name:
+          type: string
+        Course_code:
+          type: string
+        NQF_level: 
+          type: integer
+        
+          
+
+   

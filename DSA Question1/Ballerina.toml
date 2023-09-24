@@ -1,0 +1,8 @@
+[package]
+org = "rachel"
+name = "DSA_ASSIGNMENT_1"
+version = "0.1.0"
+distribution = "2201.7.0"
+
+[build-options]
+observabilityIncluded = true
