@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: Faculty of Computing and Informatics API
+  description: An API for managing staff, offices, and allocated courses within the Faculty of Computing and Informatics.
+  version: 1.0.0
+servers:
+  - url: http://localhost:9090/api/v1
+paths:
+  /lecturers:
+    get:
+      summary: Retrieve a list of all lecturers within the faculty.
+      responses:
+        '200':
+          description: A list of all lecturers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lecturer'
+  /lecturers/{staffNumber}:
+    get:
+      summary: Retrieve the details of a specific lecturer by their staff number.
+      parameters:
+        - name: staffNumber
+          in: path
+          required: true
+          schema: 
+            type: integer
+      responses:
+        '200':
+          description: The details of the lecturer with the specified staff number.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lecturer'
+        '404':
+          description: The lecturer with the specified staff number does not exist.
+    put:
+      summary: Update an existing lecturer's information.
+      parameters:
+        - name: staffNumber
+          in: path
+          required: true
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lecturer'
+      responses:
+        '200':
+          description: The lecturer's information has been updated successfully.
+        '404':
+          description: The lecturer with the specified staff number does not exist.
+    delete:
+      summary: Delete a lecturer's record by their staff number.
+      parameters:
+        - name: staffNumber
+          in: path
+          required: true
+          type: integer
+      responses:
+        '204':
+          description: The lecturer's record has been deleted successfully.
+        '404':
+          description: The lecturer with the specified staff number does not exist.
+  /lecturers/courses/{courseCode}:
+    get:
+      summary: Retrieve all the lecturers that teach a certain course.
+      parameters:
+        - name: courseCode
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: A list of all lecturers that teach the specified course.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lecturer'
+        '404':
+          description: The course with the specified course code does not exist.
+  /lecturers/offices/{officeNumber}:
+    get:
+      summary: Retrieve all the lecturers that sit in the same office.
+      parameters:
+        - name: officeNumber
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: A list of all lecturers that sit in the same office.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lecturer'
+        '404':
+          description: The office with the specified office number does not exist.
+components:
+  schemas:
+    Lecturer:
+      type: object
+      properties:
+        staffNumber:
+          type: integer
+        officeNumber:
+          type: integer
+        staffName:
+          type: string
+        title:
+          type: string
+        courses:
+          type: array
+          items:
+            type: string
+    Course:
+      type: object
+      properties:
+        courseName:
+          type: string
+        courseCode:
+          type: string
+        nqfLevel:
+          type: integer

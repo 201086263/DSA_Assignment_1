@@ -1,0 +1,163 @@
+openapi: "3.0.1"
+info:
+  title: Fauculty of Computer and Informatics Staff Members
+  version: "0.0.1"
+servers:
+  - url: http://localhost:9090/vle/api/v1
+
+paths:
+  /Lecturer:
+    get:
+      summary: Get a list of all lecturers
+      operationId: all_lecturers
+      description: Successful response
+      responses:
+        "200":
+          description: "A list of lecturers"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lecturer"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+    post:
+      summary: Add a new lecturer
+      operationId: Add
+      description: Add a new lecturer and add it to the list of lecturers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Lecturer"
+      responses:
+        "201":
+          description: Lecturer successfully added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lecturer"
+  /Lecturer/{Staff_number}:
+    get:
+      summary: Retrieve lecturer by staff number
+      parameters:
+        - name: Staff_number
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully retrieved!!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lecturer"
+
+    put:
+      summary: Update an existing lecturer's details
+      parameters:
+        - name: Staff_number
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Lecturer"
+      responses:
+        "200":
+            description: Successfully retrieved!!
+            content:
+              application/json:
+               schema:
+                $ref: "#/components/schemas/Lecturer"
+    delete:
+      summary: Delete lecturer by staff number
+      parameters:
+        - name: Staff_number
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Lecturer deleted successfully!!
+  /Courses/{Course_code}/Lecturer:
+    get:
+      summary: Retrieve all lecturer's that teach the course
+      parameters:
+        - name: Course_code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully retrieved!!
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lecturer"
+
+  /offices/{Office_number}/Lecturer:
+    get:
+      summary: Retrieve all lecturer's that sit in the same office
+      parameters:
+        - name: Office_number
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully retrieved!!
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lecturer"                
+
+components:
+  schemas:
+    Lecturer:
+      type: object
+      properties:
+        Staff_number:
+          type: integer
+        Lecturer_name:
+          type: integer
+        Office_number:
+          type: string
+        Title:
+          type: string
+        Gender: 
+          type: string
+        Courses:
+          type: array
+          items:
+            type: string
+
+    Courses:
+      type: object
+      properties:
+        Course_name:
+          type: string
+        Course_code:
+          type: string
+        NQF_level: 
+          type: integer
+        
+          
+
+  responses:
+    ErrorResponse:      
+      description: lecturer not found
