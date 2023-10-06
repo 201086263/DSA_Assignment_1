@@ -3,20 +3,6 @@
 
 import ballerina/http;
 
-type lecturers record{
-    string Office_number?;
-    string Staff_number?;
-    string[]Courses?;
-};
-type Courses record{
-    string Course_name?;
-    string Course_code?;
-    int NQF_level?;
-};
-
-
-
-
 public isolated client class Client {
     final http:Client clientEp;
     # Gets invoked to initialize the `connector`.
@@ -24,7 +10,7 @@ public isolated client class Client {
     # + config - The configurations to be used when initializing the `connector` 
     # + serviceUrl - URL of the target service 
     # + return - An error if connector initialization failed 
-    public isolated function init(ConnectionConfig config =  {}, string serviceUrl = "http://localhost:8080") returns error? {
+    public isolated function init(ConnectionConfig config =  {}, string serviceUrl = "http://localhost:9090/vle/api/v1") returns error? {
         http:ClientConfiguration httpClientConfig = {httpVersion: config.httpVersion, timeout: config.timeout, forwarded: config.forwarded, poolConfig: config.poolConfig, compression: config.compression, circuitBreaker: config.circuitBreaker, retryConfig: config.retryConfig, validation: config.validation};
         do {
             if config.http1Settings is ClientHttp1Settings {
@@ -54,66 +40,62 @@ public isolated client class Client {
     # Get a list of all lecturers
     #
     # + return - A list of lecturers 
-    resource isolated function get All_Lecturers() returns Lecturer[]|error {
-        string resourcePath = string `/All_Lecturers`;
+    resource isolated function get Lecturer() returns Lecturer[]|error {
+        string resourcePath = string `/Lecturer`;
         Lecturer[] response = check self.clientEp->get(resourcePath);
         return response;
     }
-    # Get Lecturer using Staff number
+    # Add a new lecturer
     #
-    # + staff_number - retrieve lecturer by staff number
-    # + return - OK 
-    resource isolated function get Lecturer_by_Staff_number(string staff_number) returns Lecturer|error {
-        string resourcePath = string `/Lecturer_by_Staff_number`;
-        map<anydata> queryParam = {"Staff_number": staff_number};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
+    # + return - Lecturer successfully added 
+    resource isolated function post Lecturer(Lecturer payload) returns Lecturer|error {
+        string resourcePath = string `/Lecturer`;
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        Lecturer response = check self.clientEp->post(resourcePath, request);
+        return response;
+    }
+    # Retrieve lecturer by staff number
+    #
+    # + return - Successfully retrieved!! 
+    resource isolated function get Lecturer/[string staff_number]() returns Lecturer|error {
+        string resourcePath = string `/Lecturer/${getEncodedUri(staff_number)}`;
         Lecturer response = check self.clientEp->get(resourcePath);
         return response;
     }
-    # add new lecturer
+    # Update an existing lecturer's details
     #
-    # + return - lecturer added 
-    resource isolated function post Add_Lecturer(Lecturer payload) returns string|error {
-        string resourcePath = string `/Add_Lecturer`;
+    # + return - Successfully updated!! 
+    resource isolated function put Lecturer/[string staff_number](Lecturer payload) returns Lecturer|error {
+        string resourcePath = string `/Lecturer/${getEncodedUri(staff_number)}`;
         http:Request request = new;
         json jsonBody = payload.toJson();
         request.setPayload(jsonBody, "application/json");
-        string response = check self.clientEp->post(resourcePath, request);
+        Lecturer response = check self.clientEp->put(resourcePath, request);
         return response;
     }
-    # Lecturer updated
+    # Delete lecturer by staff number
     #
-    # + return - updated 
-    resource isolated function put Update_Lecturer(Lecturer payload) returns string|error {
-        string resourcePath = string `/Update_Lecturer`;
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        string response = check self.clientEp->put(resourcePath, request);
-        return response;
-    }
-    # Delete Lecturer using staff number
-    #
-    # + staff_number - Delete Lecturer by Staff number
-    # + return - deleted 
-    resource isolated function delete Delete_Lecturer/[string staff_number]() returns Lecturer|error {
-        string resourcePath = string `/Delete_Lecturer/${getEncodedUri(staff_number)}`;
-        Lecturer response = check self.clientEp-> delete(resourcePath);
+    # + return - Lecturer deleted successfully!! 
+    resource isolated function delete Lecturer/[int staff_number]() returns http:Response|error {
+        string resourcePath = string `/Lecturer/${getEncodedUri(staff_number)}`;
+        http:Response response = check self.clientEp-> delete(resourcePath);
         return response;
     }
     # Retrieve all lecturer's that teach the course
     #
-    # + return - Lecturer's Successfully retrieved!! 
-    resource isolated function get Course/[string course_code]/lecturers() returns Lecturer[]|error {
-        string resourcePath = string `/Course/${getEncodedUri(course_code)}/lecturers`;
+    # + return - Successfully retrieved!! 
+    resource isolated function get Courses/[string course_code]/Lecturer() returns Lecturer[]|error {
+        string resourcePath = string `/Courses/${getEncodedUri(course_code)}/Lecturer`;
         Lecturer[] response = check self.clientEp->get(resourcePath);
         return response;
     }
     # Retrieve all lecturer's that sit in the same office
     #
     # + return - Successfully retrieved!! 
-    resource isolated function get Office/[string office_number]/lecturers() returns Lecturer[]|error {
-        string resourcePath = string `/Office/${getEncodedUri(office_number)}/lecturers`;
+    resource isolated function get offices/[string office_number]/Lecturer() returns Lecturer[]|error {
+        string resourcePath = string `/offices/${getEncodedUri(office_number)}/Lecturer`;
         Lecturer[] response = check self.clientEp->get(resourcePath);
         return response;
     }
