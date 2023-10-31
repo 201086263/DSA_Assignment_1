@@ -88,27 +88,53 @@ service / on ep0 {
         foreach Courses A in Course_table {
             if (A.Course_code === course_code) {
 
-                return  lecturer.toString();
-            }
-            
+                return  lecturer.toStrin
+e;
+        } else {
+            return error("Failed to delete department");
         }
-        string notFound = "Lecturer not found";
-            return notFound;
     }
-    # Retrieve all lecturer's that sit in the same office
-    #
-    # + office_number - parameter description 
-    # + return - Successfully retrieved!! 
-    resource function get Office/[string office_number]/lecturers() returns Lecturer[]|string {
-        foreach lecturers A in Lecturer_table {
-            if (A.Office_number === office_number) {
 
-                return  Lecturer_table.toArray();
+
+    resource function put createDepartmentObjective(string name, float weight, int departmentId, string token) returns DepartmentObjective|error {
+            if (!isAuthenticated(token)) {
+                return error("Authentication failed. Please log in.");
+            }        
+        
+        sql:ParameterizedQuery query = `INSERT INTO DepartmentObjectives(name, weight, departmentId) VALUES(${name}, ${weight}, ${departmentId})`;
+        
+        var response = DB->execute(query);
+        
+        if (response is sql:ExecutionResult) {
+            int objectiveId;
+            if (response.lastInsertId is int) {
+                objectiveId = <int>response.lastInsertId;
+            } else {
+                return error("Expected lastInsertId to be of type int");
             }
-            
-        }
-        string notFound = "Lecturer not found";
-            return notFound;
-    }
-}
+
+            DepartmentObjective newObjective = {
+                id: objectiveId,
+                name: name,
+                weight: weight,
+                department: { id: departmentId, name: "" } // we are assuming the department's name is not known at this point, so using an empty string. You may need to fetch the actual name or adjust this.
+            };
+            return newObjective;
+    
+
+
+    remote function updateDepartmentObjective(int id, string name, float weight, string token) returns DepartmentObjective|error {
+            if (!isAuthenticated(token)) {
+                return error("Authentication failed. Please log in.");
+            }        
+        
+        sql:ParameterizedQuery query = `UPDATE DepartmentObjectives SET name=${name}, weight=${weight} WHERE id=${id}`;
+        
+        var response = DB->execute(query);
+        
+        if (response is sql:ExecutionResult) {
+            return {id: id, name: name, weight: weight};
+        } else {
+            return error("Failed to update department objective");
+
 
